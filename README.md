@@ -109,5 +109,5 @@ Pull requests run formatting, golangci-lint, race-enabled unit tests, CLI contra
 smoke, Docker build/smoke, CodeQL and dependency review. Coverage is retained as
 a workflow artifact. Pushes to `main` publish `main`, `sha-*` and `latest` tags
 to `ghcr.io/maintainer64/cms-labs-checker`; a Git tag such as `v1.2.3` also
-publishes the matching container tag. Published images include BuildKit
+publishes both `v1.2.3` and the normalized SemVer tag `1.2.3`. Published images include BuildKit
 provenance and SBOM attestations.
