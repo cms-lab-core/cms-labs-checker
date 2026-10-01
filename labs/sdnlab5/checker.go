@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/maintainer64/cms-labs-checker/checker"
+	"github.com/cms-lab-core/cms-labs-checker/checker"
 )
 
 const agentPort = 8080

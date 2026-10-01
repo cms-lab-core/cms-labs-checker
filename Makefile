@@ -13,4 +13,4 @@ run:
 		go run ./cmd/checker -output build/result.json
 
 docker-build:
-	docker build -t ghcr.io/maintainer64/cms-labs-checker:local .
+	docker build -t ghcr.io/cms-lab-core/cms-labs-checker:local .

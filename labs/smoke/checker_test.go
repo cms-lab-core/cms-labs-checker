@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/maintainer64/cms-labs-checker/checker"
+	"github.com/cms-lab-core/cms-labs-checker/checker"
 )
 
 func TestCheckerPassesWithSessionContext(t *testing.T) {

@@ -3,7 +3,7 @@ package smoke
 import (
 	"context"
 
-	"github.com/maintainer64/cms-labs-checker/checker"
+	"github.com/cms-lab-core/cms-labs-checker/checker"
 )
 
 type Checker struct{}

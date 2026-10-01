@@ -10,8 +10,8 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/maintainer64/cms-labs-checker/checker"
-	"github.com/maintainer64/cms-labs-checker/internal/catalog"
+	"github.com/cms-lab-core/cms-labs-checker/checker"
+	"github.com/cms-lab-core/cms-labs-checker/internal/catalog"
 )
 
 func main() {

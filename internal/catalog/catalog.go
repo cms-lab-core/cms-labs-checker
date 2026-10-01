@@ -1,9 +1,9 @@
 package catalog
 
 import (
-	"github.com/maintainer64/cms-labs-checker/checker"
-	"github.com/maintainer64/cms-labs-checker/labs/sdnlab5"
-	"github.com/maintainer64/cms-labs-checker/labs/smoke"
+	"github.com/cms-lab-core/cms-labs-checker/checker"
+	"github.com/cms-lab-core/cms-labs-checker/labs/sdnlab5"
+	"github.com/cms-lab-core/cms-labs-checker/labs/smoke"
 )
 
 // New is the compile-time catalog. A new laboratory owns a package under labs/

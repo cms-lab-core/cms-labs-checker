@@ -54,7 +54,7 @@ jobs:
       - uses: docker/metadata-action@v6.2.0
         id: meta
         with:
-          images: ghcr.io/maintainer64/cms-labs-checker
+          images: ghcr.io/cms-lab-core/cms-labs-checker
           tags: |
             type=ref,event=branch
             type=ref,event=tag
