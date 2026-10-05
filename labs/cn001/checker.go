@@ -33,6 +33,8 @@ func (*Checker) Aliases() []string {
 
 func (*Checker) Check(ctx context.Context, environment checker.Environment) (*checker.Result, error) {
 	tasks := []*checker.Task{
+		checkHostRoute(ctx, environment, "pc1", "192.168.20.0/24", "192.168.10.1"),
+		checkHostRoute(ctx, environment, "pc2", "192.168.10.0/24", "192.168.20.1"),
 		checkRoute(ctx, environment, "r1", "192.168.20.0/24", "10.0.12.2"),
 		checkRoute(ctx, environment, "r2", "192.168.10.0/24", "10.0.12.1"),
 		checkPing(ctx, environment, "pc1", "192.168.20.10"),
@@ -42,6 +44,31 @@ func (*Checker) Check(ctx context.Context, environment checker.Environment) (*ch
 	result := checker.NewResult(tasks...)
 	result.Report = "Computer Networks 001: статическая маршрутизация и end-to-end связность"
 	return result, nil
+}
+
+func checkHostRoute(ctx context.Context, environment checker.Environment, node, prefix, gateway string) *checker.Task {
+	task := checker.NewTask(
+		fmt.Sprintf("%s: маршрут %s", strings.ToUpper(node), prefix),
+		fmt.Sprintf("Маршрут к удалённой LAN должен идти через %s по eth1", gateway),
+	)
+
+	output, err := runSSH(ctx, node, fmt.Sprintf("ip -4 route show %s", prefix))
+	if err != nil {
+		return task.AddLog("SSH/host-route check failed: "+err.Error(), node, environment.SessionNamespace)
+	}
+
+	expected := fmt.Sprintf("%s via %s dev eth1", prefix, gateway)
+	if strings.Contains(output, expected) {
+		return task.
+			AddLog(expected, node, environment.SessionNamespace).
+			SetCompleted(true)
+	}
+
+	if strings.TrimSpace(output) == "" {
+		return task.AddLog("маршрут к удалённой LAN отсутствует", node, environment.SessionNamespace)
+	}
+
+	return task.AddLog("ожидался "+expected+", получено: "+strings.TrimSpace(output), node, environment.SessionNamespace)
 }
 
 func checkRoute(ctx context.Context, environment checker.Environment, node, prefix, nextHop string) *checker.Task {
