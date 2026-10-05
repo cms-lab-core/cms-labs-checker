@@ -55,12 +55,13 @@ jobs:
         id: meta
         with:
           images: ghcr.io/cms-lab-core/cms-labs-checker
+          # Keep latest stable: only a v* tag may move this alias.
           tags: |
             type=ref,event=branch
             type=ref,event=tag
             type=semver,pattern={{version}}
             type=sha
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest,enable=${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
       - uses: docker/build-push-action@v7.4.0
         with:
           context: .

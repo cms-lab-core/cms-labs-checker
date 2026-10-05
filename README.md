@@ -107,7 +107,7 @@ docker build -t ghcr.io/cms-lab-core/cms-labs-checker:local .
 
 Pull requests run formatting, golangci-lint, race-enabled unit tests, CLI contract
 smoke, Docker build/smoke, CodeQL and dependency review. Coverage is retained as
-a workflow artifact. Pushes to `main` publish `main`, `sha-*` and `latest` tags
+a workflow artifact. Pushes to `main` publish `main` and `sha-*` tags
 to `ghcr.io/cms-lab-core/cms-labs-checker`; a Git tag such as `v1.2.3` also
-publishes both `v1.2.3` and the normalized SemVer tag `1.2.3`. Published images include BuildKit
-provenance and SBOM attestations.
+publishes `v1.2.3`, the normalized SemVer tag `1.2.3` and the stable `latest`
+alias. Published images include BuildKit provenance and SBOM attestations.
