@@ -4,6 +4,7 @@ import (
 	"github.com/cms-lab-core/cms-labs-checker/checker"
 	"github.com/cms-lab-core/cms-labs-checker/labs/cn000"
 	"github.com/cms-lab-core/cms-labs-checker/labs/cn001"
+	"github.com/cms-lab-core/cms-labs-checker/labs/cn002"
 	"github.com/cms-lab-core/cms-labs-checker/labs/sdnlab5"
 	"github.com/cms-lab-core/cms-labs-checker/labs/smoke"
 )
@@ -15,6 +16,7 @@ func New() (*checker.Registry, error) {
 	return checker.NewRegistry(
 		cn000.New(),
 		cn001.New(),
+		cn002.New(),
 		sdnlab5.New(),
 		smoke.New(),
 	)
