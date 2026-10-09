@@ -23,7 +23,6 @@ func main() {
 
 func run() error {
 	selector := flag.String("lab", "", "checker name; overrides TEST_PATH and LAB_PATH")
-	output := flag.String("output", envOr("OUTPUT_PATH", "/dev/termination-log"), "result path, or - for stdout")
 	list := flag.Bool("list", false, "list registered laboratory checkers")
 	flag.Parse()
 
@@ -54,16 +53,9 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("run %s checker: %w", lab.Name(), err)
 	}
-	if err := checker.WriteResult(*output, result); err != nil {
+	if err := checker.WriteResult(os.Stdout, result); err != nil {
 		return err
 	}
 	log.Printf("checker %s completed with score %g/%g", lab.Name(), result.CurrentScore, result.MaxScore)
 	return nil
-}
-
-func envOr(name, fallback string) string {
-	if value := strings.TrimSpace(os.Getenv(name)); value != "" {
-		return value
-	}
-	return fallback
 }
