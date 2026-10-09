@@ -1,6 +1,7 @@
 package cn004
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -11,7 +12,7 @@ import (
 	"github.com/cms-lab-core/cms-labs-checker/checker"
 )
 
-func TestTerminationPayloadFitsForCompleteAndFailedChecks(t *testing.T) {
+func TestPodLogResultPreservesAllChecks(t *testing.T) {
 	tests := []struct {
 		name     string
 		runner   commandRunner
@@ -37,12 +38,12 @@ func TestTerminationPayloadFitsForCompleteAndFailedChecks(t *testing.T) {
 			if result.MaxScore != 12 || result.CurrentScore != tt.expected {
 				t.Fatalf("score %g/%g; want %g/12", result.CurrentScore, result.MaxScore, tt.expected)
 			}
-			payload, err := checker.MarshalResult(result)
-			if err != nil {
-				t.Fatalf("MarshalResult(): %v", err)
+			var frame bytes.Buffer
+			if err := checker.WriteResult(&frame, result); err != nil {
+				t.Fatalf("WriteResult(): %v", err)
 			}
-			if len(payload) > checker.MaxTerminationMessageBytes {
-				t.Fatalf("payload %d exceeds %d", len(payload), checker.MaxTerminationMessageBytes)
+			if !strings.HasPrefix(frame.String(), checker.ResultLogPrefix) {
+				t.Fatal("checker result log prefix is missing")
 			}
 		})
 	}

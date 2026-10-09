@@ -28,8 +28,8 @@ jobs:
             --env ATTEMPT_ID=ci-attempt \
             --env SESSION_NAMESPACE=lab-ci \
             --env TEST_PATH=smoke \
-            cms-labs-checker:ci -output - > "$RUNNER_TEMP/result.json"
-          jq -e '.current_score == 2 and .tasks[0].logs[0].namespace == "lab-ci"' "$RUNNER_TEMP/result.json"
+            cms-labs-checker:ci > "$RUNNER_TEMP/result.log"
+          python3 scripts/check-result-log.py "$RUNNER_TEMP/result.log"
 
   publish:
     name: Publish GHCR image

@@ -60,30 +60,32 @@ func (*Checker) Check(ctx context.Context, env checker.Environment) (*checker.Re
 }
 ```
 
-## Result contract
+## Result contract: Pod stdout logs
 
-The executable writes exactly one JSON object to `/dev/termination-log`:
+Checker writes a single framed JSON result to **stdout**. Clabgate reads it
+from Kubernetes Pod logs. The termination message file is **not used**.
 
-```json
-{
-  "max_score": 2,
-  "current_score": 1,
-  "result_display": "1/2 checks passed",
-  "report": "Optional Markdown summary",
-  "tasks": [{
-    "title": "SSH",
-    "description": "router accepts SSH",
-    "logs": [{"node": "r1", "namespace": "lab-123", "message": "connected"}],
-    "complete": true
-  }]
-}
+The JSON model is unchanged: `max_score`, `current_score`,
+`result_display`, `report` and `tasks` with independent grading results.
+Each log line starts with one `CMS_LABS_CHECKER_RESULT_V1` prefix,
+followed by the full-payload SHA-256 and a base64 chunk (at most 2048
+characters). Matching hashes verify completion without BEGIN/END markers. Frames up to **1 MiB JSON** are accepted.
+
+This is a **breaking release**: old checker binaries which write only a
+termination message are not compatible with the new Clabgate.
+
+For Python, shell or another stack, use the standalone stdlib helper (no Go
+runtime or SDK needed):
+
+```bash
+python3 scripts/checker_result.py encode < result.json
+python3 scripts/checker_result.py decode < result.log > result.json
 ```
 
-Kubernetes limits a termination message to 4096 bytes, and `WriteResult`
-rejects larger output instead of allowing truncated JSON. Keep structured task
-messages concise and write verbose diagnostics to stdout/stderr. Clabgate adds
-trusted `check_id` and the last 64 KiB of Pod output before sending the result to
-CMS and Moodle/LTI.
+Emit the result once, as the final stdout output; write diagnostic messages to
+stderr. Failed checks still return a valid partial-score result and exit zero.
+Nonzero exit codes indicate checker infrastructure/runtime errors, not a
+student's incorrect answer. There is no termination-message or raw-JSON fallback.
 
 ## Local development
 
@@ -94,7 +96,7 @@ go test ./labs/smoke
 ATTEMPT_ID=local \
 SESSION_NAMESPACE=lab-local \
 TEST_PATH=smoke \
-go run ./cmd/checker -output build/result.json
+go run ./cmd/checker > build/result.log
 ```
 
 Build the same container used by Clabgate:
@@ -111,3 +113,4 @@ a workflow artifact. Pushes to `main` publish `main` and `sha-*` tags
 to `ghcr.io/cms-lab-core/cms-labs-checker`; a Git tag such as `v1.2.3` also
 publishes `v1.2.3`, the normalized SemVer tag `1.2.3` and the stable `latest`
 alias. Published images include BuildKit provenance and SBOM attestations.
+

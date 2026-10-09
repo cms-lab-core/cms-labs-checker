@@ -69,11 +69,7 @@ jobs:
           SESSION_NAMESPACE: lab-ci
           TEST_PATH: checks/smoke.go
         run: |
-          "$RUNNER_TEMP/checker" -output "$RUNNER_TEMP/result.json"
-          jq -e '
-            .max_score == 2 and
-            .current_score == 2 and
-            .tasks[0].logs[0].namespace == "lab-ci" and
-            .tasks[0].complete == true
-          ' "$RUNNER_TEMP/result.json"
-          test "$(wc -c < "$RUNNER_TEMP/result.json")" -le 4096
+          "$RUNNER_TEMP/checker" > "$RUNNER_TEMP/result.log"
+          python3 scripts/check-result-log.py "$RUNNER_TEMP/result.log"
+      - name: Test language-independent result helper
+        run: python3 -m unittest discover -s tests -p 'test_checker_result.py'
