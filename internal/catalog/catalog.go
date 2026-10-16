@@ -8,6 +8,7 @@ import (
 	"github.com/cms-lab-core/cms-labs-checker/labs/cn003"
 	"github.com/cms-lab-core/cms-labs-checker/labs/cn004"
 	"github.com/cms-lab-core/cms-labs-checker/labs/cn005"
+	"github.com/cms-lab-core/cms-labs-checker/labs/cn006"
 	"github.com/cms-lab-core/cms-labs-checker/labs/sdnlab5"
 	"github.com/cms-lab-core/cms-labs-checker/labs/smoke"
 )
@@ -23,6 +24,7 @@ func New() (*checker.Registry, error) {
 		cn003.New(),
 		cn004.New(),
 		cn005.New(),
+		cn006.New(),
 		sdnlab5.New(),
 		smoke.New(),
 	)
